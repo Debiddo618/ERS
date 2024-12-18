@@ -9,25 +9,27 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Reimbursement {
-
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reimbId;
+    private Long id;
 
     @Column(nullable = false)
-    private String description;
+    private String firstName;
 
     @Column(nullable = false)
-    private Double amount;
+    private String lastName;
+
+    @Column(nullable = false, unique = true)
+    private String username;
 
     @Column(nullable = false)
-    private String status;
+    private String password;
 
-
+    @Column(nullable = false)
+    private String role;
 }

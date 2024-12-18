@@ -1,6 +1,7 @@
 package com.example.employee_reimbursement_system.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.employee_reimbursement_system.model.User;
+import com.example.employee_reimbursement_system.model.UserLogin;
 import com.example.employee_reimbursement_system.service.UserService;
 
 @Controller
@@ -29,6 +31,18 @@ public class UserController {
     public ResponseEntity<User> saveUser(@RequestBody User user) {
         User savedUser = userService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+    }
+
+    // Login User
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody UserLogin userLogin) {
+        Optional<User> userOptional = userService.authenticateUser(userLogin.getUsername(),
+                userLogin.getPassword());
+        if (userOptional.isPresent()) {
+            return ResponseEntity.ok("Login successful");
+        } else {
+            return ResponseEntity.status(401).body("Invalid username or password");
+        }
     }
 
     // Get All Users
@@ -68,7 +82,7 @@ public class UserController {
         try {
             User user = userService.getUserById(id)
                     .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-            
+
             user.setFirstName(userDetails.getFirstName());
             user.setLastName(userDetails.getLastName());
             user.setUsername(userDetails.getUsername());
@@ -88,7 +102,7 @@ public class UserController {
         try {
             User user = userService.getUserById(id)
                     .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-            
+
             userService.deleteUser(id);
             return ResponseEntity.ok(user);
         } catch (RuntimeException e) {

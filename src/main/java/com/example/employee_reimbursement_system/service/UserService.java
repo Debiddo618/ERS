@@ -15,12 +15,24 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    // Create or Update
+    // Create, Update, or Register the User
     public User saveUser(User user) {
         String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         user.setPassword(hashed);
-        System.out.println(hashed);
+        // System.out.println(hashed);
         return userRepository.save(user);
+    }
+
+    // Login User
+    public Optional<User> authenticateUser(String username, String password) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (BCrypt.checkpw(password, user.getPassword())) {
+                return Optional.of(user);
+            }
+        }
+        return Optional.empty();
     }
 
     // Read All

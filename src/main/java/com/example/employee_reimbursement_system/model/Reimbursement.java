@@ -1,5 +1,8 @@
 package com.example.employee_reimbursement_system.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,8 +35,9 @@ public class Reimbursement {
     @Column(nullable = false)
     private String status;
 
-    @ManyToOne
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
 
 }

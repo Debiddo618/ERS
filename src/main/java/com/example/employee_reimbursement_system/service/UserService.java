@@ -3,6 +3,7 @@ package com.example.employee_reimbursement_system.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,9 @@ public class UserService {
 
     // Create or Update
     public User saveUser(User user) {
+        String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        user.setPassword(hashed);
+        System.out.println(hashed);
         return userRepository.save(user);
     }
 

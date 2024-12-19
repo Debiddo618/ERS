@@ -6,6 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.employee_reimbursement_system.model.User;
 import com.example.employee_reimbursement_system.model.UserLogin;
+import com.example.employee_reimbursement_system.service.JwtService;
 import com.example.employee_reimbursement_system.service.UserService;
 
 @Controller
@@ -28,24 +32,43 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+	AuthenticationManager authenticationManager;
+
+    @Autowired
+	private JwtService jwtService;
+
     // Create or Update User
     @PostMapping("/register")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
-        System.out.println("Inside Create User: " + user.getUsername() );
+        System.out.println("Inside Create User: " + user.getUsername());
         User savedUser = userService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
     // Login User
+    // @PostMapping("/login")
+    // public ResponseEntity<?> loginUser(@RequestBody UserLogin userLogin) {
+    // System.out.println("Inside login");
+    // Optional<User> userOptional = userService.loginUser(userLogin.getUsername(),
+    // userLogin.getPassword());
+    // if (userOptional.isPresent()) {
+    // return ResponseEntity.ok("Login successful");
+    // } else {
+    // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username
+    // or password");
+    // }
+    // }
+    // Login User
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserLogin userLogin) {
-        System.out.println("Inside login");
-        Optional<User> userOptional = userService.loginUser(userLogin.getUsername(),
-                userLogin.getPassword());
-        if (userOptional.isPresent()) {
-            return ResponseEntity.ok("Login successful");
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(userLogin.getUsername(), userLogin.getPassword()));
+    
+        if (authentication.isAuthenticated()) {
+            return ResponseEntity.ok(jwtService.generateToken(userLogin.getUsername()));
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login Failed");
         }
     }
 

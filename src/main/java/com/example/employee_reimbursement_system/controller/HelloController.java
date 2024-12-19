@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+
+// For Testing purposes
 @RestController
 public class HelloController {
 
@@ -16,7 +18,7 @@ public class HelloController {
 
     @GetMapping("about")
     public String about(HttpServletRequest request) {
-        return "Telusko " + request.getSession().getId();
+        return "About Me " + request.getSession().getId();
     }
 
     @GetMapping("csrf-token")

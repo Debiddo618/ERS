@@ -34,10 +34,7 @@ public class RoleController {
 
     @PostMapping
     public ResponseEntity<Role> createRole(@RequestBody Role role) {
-        Role existingRole = roleService.findRoleByName(role.getName().toUpperCase());
-        if (existingRole != null) {
-            return ResponseEntity.ok(existingRole);
-        }
+        role.setName(role.getName().toUpperCase());
         Role createdRole = roleService.createRole(role);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRole);
     }

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.employee_reimbursement_system.model.Role;
-import com.example.employee_reimbursement_system.model.Role.RoleName;
 import com.example.employee_reimbursement_system.repository.RoleRepository;
 
 @Service

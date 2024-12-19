@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.employee_reimbursement_system.model.Role;
 import com.example.employee_reimbursement_system.model.User;
 import com.example.employee_reimbursement_system.model.UserLogin;
 import com.example.employee_reimbursement_system.service.JwtService;
@@ -56,10 +57,36 @@ public class UserController {
         }
     }
 
+    @PostMapping("/registerManager")
+    public ResponseEntity<?> saveManager(@RequestBody User user) {
+        try {
+            // Manager already exist
+            Optional<User> existingUser = userService.findByUsername(user.getUsername());
+            if (existingUser.isPresent()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("Username already exists. Please try another username.");
+            }
+
+            // Set the role of the user to MANAGER
+            Role managerRole = new Role();
+            managerRole.setName("MANAGER");
+            user.setRole(managerRole);
+
+            // Save the user with the MANAGER role
+            User savedUser = userService.saveUser(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while creating the manager: " + e.getMessage());
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserLogin userLogin) {
         try {
-            // Authenticate the user, throws an Authenication error is user provide invalid username or password
+            // Authenticate the user, throws an Authenication error is user provide invalid
+            // username or password
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userLogin.getUsername(), userLogin.getPassword()));
 

@@ -36,12 +36,12 @@ public class UserController {
     // Login User
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserLogin userLogin) {
-        Optional<User> userOptional = userService.authenticateUser(userLogin.getUsername(),
+        Optional<User> userOptional = userService.loginUser(userLogin.getUsername(),
                 userLogin.getPassword());
         if (userOptional.isPresent()) {
             return ResponseEntity.ok("Login successful");
         } else {
-            return ResponseEntity.status(401).body("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
     }
 

@@ -24,7 +24,7 @@ public class UserService {
     }
 
     // Login User
-    public Optional<User> authenticateUser(String username, String password) {
+    public Optional<User> loginUser(String username, String password) {
         Optional<User> userOptional = userRepository.findByUsername(username);
         if (userOptional.isPresent()) {
             User user = userOptional.get();

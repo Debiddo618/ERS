@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.employee_reimbursement_system.model.User;
@@ -15,20 +16,27 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    private BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(12);
+
+
     // Create, Update, or Register the User
     public User saveUser(User user) {
-        String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-        user.setPassword(hashed);
+        // String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        // user.setPassword(hashed);
         // System.out.println(hashed);
+        user.setPassword(encoder.encode(user.getPassword()));
+        System.out.println(user.getPassword());
         return userRepository.save(user);
     }
 
     // Login User
     public Optional<User> loginUser(String username, String password) {
+        System.out.println("Inside loginUser Service");
         Optional<User> userOptional = userRepository.findByUsername(username);
         if (userOptional.isPresent()) {
+            // This is the user in the database
             User user = userOptional.get();
-            if (BCrypt.checkpw(password, user.getPassword())) {
+            if (encoder.matches(password, user.getPassword())) {
                 return Optional.of(user);
             }
         }

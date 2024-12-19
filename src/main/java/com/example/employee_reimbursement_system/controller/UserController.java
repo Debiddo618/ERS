@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,7 +45,8 @@ public class UserController {
             // User already exist
             Optional<User> existingUser = userService.findByUsername(user.getUsername());
             if (existingUser.isPresent()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists. Please try another username.");
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("Username already exists. Please try another username.");
             }
             User savedUser = userService.saveUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
@@ -54,17 +56,17 @@ public class UserController {
         }
     }
 
-    // Login User
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserLogin userLogin) {
-        Authentication authentication = authenticationManager
-                .authenticate(
-                        new UsernamePasswordAuthenticationToken(userLogin.getUsername(), userLogin.getPassword()));
+        try {
+            // Authenticate the user, throws an Authenication error is user provide invalid username or password
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userLogin.getUsername(), userLogin.getPassword()));
 
-        if (authentication.isAuthenticated()) {
             // Fetch the user from the database using the username
             Optional<User> userOptional = userService.findByUsername(userLogin.getUsername());
 
+            // Check if the user exists
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
                 Long userId = user.getId();
@@ -72,13 +74,17 @@ public class UserController {
                 // Generate JWT token with the userId
                 String token = jwtService.generateToken(user.getUsername(), userId);
 
-                // Return the token in the response
                 return ResponseEntity.ok(token);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login Failed");
+
+            // this block pretty much never hit since, authenication will throw an
+            // Authentication Exception if user provide the wrong username or password
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred during login: " + e.getMessage());
         }
     }
 

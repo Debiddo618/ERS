@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,26 +37,54 @@ public class ReimbursementController {
     @Autowired
     private UserService userService;
 
+    // @PostMapping
+    // public ResponseEntity<?> createReimbursement(@RequestBody Reimbursement reimbursement) {
+    //     try {
+    //         // Fetch the User from the database using the ID provided in the request
+    //         Optional<User> optionalUser = userService.getUserById(reimbursement.getUser().getId());
+
+    //         if (!optionalUser.isPresent()) {
+    //             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    //                     .body("User with id " + reimbursement.getUser().getId() + " not found");
+    //         }
+
+    //         User user = optionalUser.get();
+    //         reimbursement.setUser(user);
+
+    //         // Save the reimbursement
+    //         Reimbursement savedReimbursement = reimbursementService.saveReimbursement(reimbursement);
+
+    //         return ResponseEntity.status(HttpStatus.CREATED).body(savedReimbursement);
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    //                 .body("An error occurred while creating the reimbursement: " + e.getMessage());
+    //     }
+    // }
+
     @PostMapping
     public ResponseEntity<?> createReimbursement(@RequestBody Reimbursement reimbursement) {
         try {
-            // Fetch the User from the database using the ID provided in the request
-            Optional<User> optionalUser = userService.getUserById(reimbursement.getUser().getId());
-
+            // Fetch the authenticated user's details
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+            
+            // Retrieve the user from the database using the username
+            Optional<User> optionalUser = userService.findByUsername(username);
             if (!optionalUser.isPresent()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("User with id " + reimbursement.getUser().getId() + " not found");
+                        .body("User with username " + username + " not found");
             }
-
+    
             User user = optionalUser.get();
+    
+            // Associate the reimbursement with the user
             reimbursement.setUser(user);
-
+    
             // Save the reimbursement
             Reimbursement savedReimbursement = reimbursementService.saveReimbursement(reimbursement);
-
+    
             return ResponseEntity.status(HttpStatus.CREATED).body(savedReimbursement);
         } catch (Exception e) {
-            e.printStackTrace(); // For debugging purposes
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred while creating the reimbursement: " + e.getMessage());
         }

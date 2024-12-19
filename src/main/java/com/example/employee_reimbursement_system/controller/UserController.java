@@ -33,53 +33,63 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-	AuthenticationManager authenticationManager;
+    AuthenticationManager authenticationManager;
 
     @Autowired
-	private JwtService jwtService;
+    private JwtService jwtService;
 
-    // Create or Update User
     @PostMapping("/register")
-    public ResponseEntity<User> saveUser(@RequestBody User user) {
-        System.out.println("Inside Create User: " + user.getUsername());
-        User savedUser = userService.saveUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+    public ResponseEntity<?> saveUser(@RequestBody User user) {
+        try {
+            // User already exist
+            Optional<User> existingUser = userService.findByUsername(user.getUsername());
+            if (existingUser.isPresent()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists. Please try another username.");
+            }
+            User savedUser = userService.saveUser(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while creating the user: " + e.getMessage());
+        }
     }
 
-    // Login User
-    // @PostMapping("/login")
-    // public ResponseEntity<?> loginUser(@RequestBody UserLogin userLogin) {
-    // System.out.println("Inside login");
-    // Optional<User> userOptional = userService.loginUser(userLogin.getUsername(),
-    // userLogin.getPassword());
-    // if (userOptional.isPresent()) {
-    // return ResponseEntity.ok("Login successful");
-    // } else {
-    // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username
-    // or password");
-    // }
-    // }
     // Login User
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserLogin userLogin) {
         Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(userLogin.getUsername(), userLogin.getPassword()));
-    
+                .authenticate(
+                        new UsernamePasswordAuthenticationToken(userLogin.getUsername(), userLogin.getPassword()));
+
         if (authentication.isAuthenticated()) {
-            return ResponseEntity.ok(jwtService.generateToken(userLogin.getUsername()));
+            // Fetch the user from the database using the username
+            Optional<User> userOptional = userService.findByUsername(userLogin.getUsername());
+
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                Long userId = user.getId();
+
+                // Generate JWT token with the userId
+                String token = jwtService.generateToken(user.getUsername(), userId);
+
+                // Return the token in the response
+                return ResponseEntity.ok(token);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login Failed");
         }
     }
 
-    // Get All Users
+    // Get all users
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
-    // Get User by ID
+    // Get user by id
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {
@@ -91,7 +101,7 @@ public class UserController {
         }
     }
 
-    // Get User by Username
+    // Get user by username
     @GetMapping("/username/{username}")
     public ResponseEntity<?> getUserByUsername(@PathVariable String username) {
         try {
@@ -103,7 +113,7 @@ public class UserController {
         }
     }
 
-    // Update User
+    // Update user
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         try {
@@ -123,7 +133,7 @@ public class UserController {
         }
     }
 
-    // Delete User by ID
+    // Delete user by id
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         try {

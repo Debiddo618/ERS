@@ -20,19 +20,14 @@ public class MyUserDetailsService implements UserDetailsService {
     private UserRepository repo;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("Inside loadUserByUsername .................");
-        System.out.println("Username: " + username);
-        
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException { 
         Optional<User> optionalUser = repo.findByUsername(username);
         if (!optionalUser.isPresent()) {
             System.out.println("User not found in the database.");
             throw new UsernameNotFoundException("User 404");
         }
 
-        User user = optionalUser.get();
-        System.out.println("Found User: " + user.getUsername());
-        
+        User user = optionalUser.get();        
         return new UserPrincipal(user);
     }
 

@@ -12,7 +12,6 @@ import com.example.employee_reimbursement_system.model.User;
 import com.example.employee_reimbursement_system.model.UserPrincipal;
 import com.example.employee_reimbursement_system.repository.UserRepository;
 
-
 @Service
 public class MyUserDetailsService implements UserDetailsService {
 
@@ -20,14 +19,14 @@ public class MyUserDetailsService implements UserDetailsService {
     private UserRepository repo;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException { 
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> optionalUser = repo.findByUsername(username);
         if (!optionalUser.isPresent()) {
-            System.out.println("User not found in the database.");
+            // System.out.println("User not found in the database.");
             throw new UsernameNotFoundException("User 404");
         }
 
-        User user = optionalUser.get();        
+        User user = optionalUser.get();
         return new UserPrincipal(user);
     }
 

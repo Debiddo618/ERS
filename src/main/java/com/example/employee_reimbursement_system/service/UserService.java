@@ -16,8 +16,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    private BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(12);
-
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     // Create, Update, or Register the User
     public User saveUser(User user) {
@@ -29,7 +28,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // Login User
+    // Login user
     public Optional<User> loginUser(String username, String password) {
         System.out.println("Inside loginUser Service");
         Optional<User> userOptional = userRepository.findByUsername(username);
@@ -43,17 +42,17 @@ public class UserService {
         return Optional.empty();
     }
 
-    // Read All
+    // Read all
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Read by ID
+    // Read by id
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
-    // Read by Username
+    // Read by username
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -63,7 +62,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // Delete by ID
+    // Delete by id
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }

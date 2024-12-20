@@ -40,7 +40,7 @@ public class ReimbursementService {
         return reimbursementRepository.save(reimbursement);
     }
 
-    public Reimbursement approveReimbursement(Long id){
+    public Reimbursement approveReimbursement(Long id) {
         Optional<Reimbursement> reimbursementOpt = reimbursementRepository.findById(id);
         if (reimbursementOpt.isPresent()) {
             Reimbursement reimbursement = reimbursementOpt.get();

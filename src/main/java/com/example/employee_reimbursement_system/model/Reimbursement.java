@@ -33,7 +33,7 @@ public class Reimbursement {
     private Double amount;
 
     @Column(nullable = false)
-    private String status;
+    private String status = "pending";
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "user_id", nullable = false)

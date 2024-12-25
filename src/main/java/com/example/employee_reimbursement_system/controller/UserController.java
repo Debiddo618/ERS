@@ -1,6 +1,8 @@
 package com.example.employee_reimbursement_system.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ import com.example.employee_reimbursement_system.service.UserService;
 
 @Controller
 @RequestMapping("/users")
-// @CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     @Autowired
@@ -101,7 +103,10 @@ public class UserController {
                 // Generate JWT token with the userId
                 String token = jwtService.generateToken(user.getUsername(), userId);
 
-                return ResponseEntity.ok(token);
+                Map<String, String> response = new HashMap<>();
+                response.put("token", token);
+
+                return ResponseEntity.ok(response);
             }
 
             // this block pretty much never hit since, authenication will throw an

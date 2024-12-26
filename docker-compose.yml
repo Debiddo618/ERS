@@ -1,0 +1,31 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:13
+    container_name: ers_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ERS
+    ports:
+      - "5432:5432"
+    networks:
+      - ers_network
+
+  springboot-app:
+    build: .
+    container_name: ers_springboot_app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ERS
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - ers_network
+
+networks:
+  ers_network:
+    driver: bridge

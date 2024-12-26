@@ -50,4 +50,8 @@ public class ReimbursementService {
             throw new ReimbursementNotFoundException("Reimbursement not found with id: " + id);
         }
     }
+
+    public List<Reimbursement> getReimbursementsByUserId(Long userId) {
+        return reimbursementRepository.findByUserId(userId);
+    }
 }

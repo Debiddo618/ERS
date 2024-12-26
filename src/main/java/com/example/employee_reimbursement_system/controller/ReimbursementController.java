@@ -143,4 +143,21 @@ public class ReimbursementController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getReimbursementsByUserId(@PathVariable Long userId) {
+        try {
+            List<Reimbursement> reimbursements = reimbursementService.getReimbursementsByUserId(userId);
+
+            if (reimbursements.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("No reimbursements found for user with ID: " + userId);
+            }
+
+            return ResponseEntity.ok(reimbursements);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while retrieving reimbursements for user ID: " + userId);
+        }
+    }
 }

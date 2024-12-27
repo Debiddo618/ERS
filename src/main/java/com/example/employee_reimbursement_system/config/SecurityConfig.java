@@ -24,7 +24,7 @@ public class SecurityConfig {
     private UserDetailsService userDetailsService;
 
     @Autowired
-	private JwtFilter jwtFilter;
+    private JwtFilter jwtFilter;
 
     @Bean
     public AuthenticationProvider authProvider() {
@@ -39,22 +39,20 @@ public class SecurityConfig {
         System.out.println("Inside Security Filter Chain");
 
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("/users/register","/users/login","/users/registerManager").permitAll() 
-                    .anyRequest().authenticated()
-            )
-            .httpBasic(Customizer.withDefaults())
-            .sessionManagement(session -> session
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/users/register", "/users/login", "/users/registerManager").permitAll()
+                        .anyRequest().authenticated())
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors(Customizer.withDefaults());
         return http.build();
     }
 
     @Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-		return config.getAuthenticationManager();
-	}
-
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ import com.example.employee_reimbursement_system.service.UserService;
 
 @Controller
 @RequestMapping("/reimbursements")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ReimbursementController {
     @Autowired
     private ReimbursementService reimbursementService;

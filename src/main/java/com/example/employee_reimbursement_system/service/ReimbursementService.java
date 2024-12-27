@@ -44,7 +44,18 @@ public class ReimbursementService {
         Optional<Reimbursement> reimbursementOpt = reimbursementRepository.findById(id);
         if (reimbursementOpt.isPresent()) {
             Reimbursement reimbursement = reimbursementOpt.get();
-            reimbursement.setStatus("APPROVED");
+            reimbursement.setStatus("approved");
+            return reimbursementRepository.save(reimbursement);
+        } else {
+            throw new ReimbursementNotFoundException("Reimbursement not found with id: " + id);
+        }
+    }
+
+    public Reimbursement rejectReimbursement(Long id) {
+        Optional<Reimbursement> reimbursementOpt = reimbursementRepository.findById(id);
+        if (reimbursementOpt.isPresent()) {
+            Reimbursement reimbursement = reimbursementOpt.get();
+            reimbursement.setStatus("rejected");
             return reimbursementRepository.save(reimbursement);
         } else {
             throw new ReimbursementNotFoundException("Reimbursement not found with id: " + id);

@@ -194,6 +194,25 @@ public class UserController {
     // Delete user by id
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        // Fetch the authenticated user's details
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        // Retrieve the user from the database using the username
+        Optional<User> optionalUser = userService.findByUsername(username);
+        if (!optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("User with username " + username + " not found");
+        }
+
+        User currentUser = optionalUser.get();
+
+        // Check if the user is not a Manager
+        if (!currentUser.getRole().getName().equals("MANAGER")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Unauthorized Access: Only Managers are allowed to delete users.");
+        }
+
         try {
             User user = userService.getUserById(id)
                     .orElseThrow(() -> new RuntimeException("User not found with id: " + id));

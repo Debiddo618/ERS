@@ -61,6 +61,16 @@ public class ReimbursementService {
             throw new ReimbursementNotFoundException("Reimbursement not found with id: " + id);
         }
     }
+    public Reimbursement pendReimbursement(Long id) {
+        Optional<Reimbursement> reimbursementOpt = reimbursementRepository.findById(id);
+        if (reimbursementOpt.isPresent()) {
+            Reimbursement reimbursement = reimbursementOpt.get();
+            reimbursement.setStatus("pending");
+            return reimbursementRepository.save(reimbursement);
+        } else {
+            throw new ReimbursementNotFoundException("Reimbursement not found with id: " + id);
+        }
+    }
 
     public List<Reimbursement> getReimbursementsByUserId(Long userId) {
         return reimbursementRepository.findByUserId(userId);

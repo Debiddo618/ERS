@@ -176,6 +176,36 @@ public class ReimbursementController {
         }
     }
 
+    // Pending reimbursement manager only
+    @PostMapping("/pend/{id}")
+    public ResponseEntity<?> pendReimbursement(@PathVariable Long id) {
+        try {
+
+            // Fetch the authenticated user's details
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+
+            // Retrieve the user from the database using the username
+            Optional<User> optionalUser = userService.findByUsername(username);
+            if (!optionalUser.isPresent()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("User with username " + username + " not found");
+            }
+
+            User user = optionalUser.get();
+
+            // Check if the user is not a Manager
+            if (!user.getRole().getName().equals("MANAGER")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Unauthorized Access: Only Managers are allowed to reject reimbursements.");
+            }
+            Reimbursement approvedReimbursement = reimbursementService.pendReimbursement(id);
+            return ResponseEntity.ok(approvedReimbursement);
+        } catch (ReimbursementNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getReimbursementsByUserId(@PathVariable Long userId) {
         try {

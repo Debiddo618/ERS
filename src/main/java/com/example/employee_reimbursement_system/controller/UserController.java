@@ -121,6 +121,41 @@ public class UserController {
         }
     }
 
+    @PutMapping("/{id}/role/{role}")
+    public ResponseEntity<?> updateUserRole(@PathVariable Long id, @PathVariable String role) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+
+            Optional<User> optionalUser = userService.findByUsername(username);
+            if (!optionalUser.isPresent()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("User with username " + username + " not found");
+            }
+
+            User currentUser = optionalUser.get();
+
+            if (!currentUser.getRole().getName().equals("MANAGER")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Unauthorized Access: Only Managers are allowed to update user roles.");
+            }
+
+            User userToUpdate = userService.getUserById(id)
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+            Role roleToUpdate = new Role();
+            roleToUpdate.setName(role);
+            userToUpdate.setRole(roleToUpdate);
+
+            User updatedUser = userService.updateUser(userToUpdate);
+
+            return ResponseEntity.ok(updatedUser);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
     // Get all users
     @GetMapping
     public ResponseEntity<?> getAllUsers() {

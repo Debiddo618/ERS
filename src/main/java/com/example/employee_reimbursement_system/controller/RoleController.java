@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.employee_reimbursement_system.model.Role;
+import com.example.employee_reimbursement_system.model.User;
 import com.example.employee_reimbursement_system.service.RoleService;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -41,6 +42,17 @@ public class RoleController {
     public ResponseEntity<?> deleteRole(@PathVariable Long id) {
         roleService.deleteRoleById(id);
         return ResponseEntity.ok("Role Deleted Sucessfully");
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getRoleById(@PathVariable Long id) {
+        try {
+            Role role = roleService.getRoleById(id)
+                    .orElseThrow(() -> new RuntimeException("Role not found with id: " + id));
+            return ResponseEntity.ok(role);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
 }

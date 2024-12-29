@@ -2,6 +2,7 @@
 package com.example.employee_reimbursement_system.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,10 @@ public class RoleService {
 
     public Role findRoleByName(String name) {
         return roleRepository.findByName(name).orElse(null);
+    }
+
+    public Optional<Role> getRoleById(Long id){
+        return roleRepository.findById(id);
     }
 
 }

@@ -16,9 +16,10 @@ public class EmployeeReimbursementSystemApplication {
 		// Dotenv dotenv = Dotenv.load();
 
 		// // Set environment variables to system properties
-		// dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
+		// dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(),
+		// entry.getValue()));
 
-		// SpringApplication.run(EmployeeReimbursementSystemApplication.class, args);
+		SpringApplication.run(EmployeeReimbursementSystemApplication.class, args);
 	}
 
 	@Bean

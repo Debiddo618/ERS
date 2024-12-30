@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.employee_reimbursement_system.model.Role;
-import com.example.employee_reimbursement_system.model.User;
 import com.example.employee_reimbursement_system.service.RoleService;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/roles")
-@CrossOrigin(origins = "https://willowy-selkie-a1a305.netlify.app/")
+@CrossOrigin(origins = "http://localhost:5173")
 public class RoleController {
 
     @Autowired

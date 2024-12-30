@@ -31,7 +31,7 @@ import com.example.employee_reimbursement_system.service.UserService;
 
 @Controller
 @RequestMapping("/users")
-@CrossOrigin(origins = "https://willowy-selkie-a1a305.netlify.app/")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     @Autowired

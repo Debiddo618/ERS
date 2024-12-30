@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/roles")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://willowy-selkie-a1a305.netlify.app/")
 public class RoleController {
 
     @Autowired

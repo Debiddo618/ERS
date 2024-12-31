@@ -19,8 +19,8 @@ public class EmployeeReimbursementSystemApplication {
 	// 	dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(),
 	// 	entry.getValue()));
 
-	// 	SpringApplication.run(EmployeeReimbursementSystemApplication.class, args);
-	// }
+		SpringApplication.run(EmployeeReimbursementSystemApplication.class, args);
+	}
 
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {

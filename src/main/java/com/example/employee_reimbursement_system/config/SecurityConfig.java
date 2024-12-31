@@ -36,8 +36,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println("Inside Security Filter Chain");
-
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
@@ -47,9 +45,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .cors(Customizer.withDefaults()).headers(headers -> headers
-                        .contentSecurityPolicy(csp -> csp
-                                .policyDirectives("upgrade-insecure-requests")));
+                .cors(Customizer.withDefaults());
         return http.build();
     }
 

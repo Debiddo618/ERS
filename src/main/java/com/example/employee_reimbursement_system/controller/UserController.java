@@ -31,7 +31,7 @@ import com.example.employee_reimbursement_system.service.UserService;
 
 @Controller
 @RequestMapping("/users")
-// @CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     @Autowired

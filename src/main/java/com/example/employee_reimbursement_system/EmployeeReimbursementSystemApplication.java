@@ -12,15 +12,15 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class EmployeeReimbursementSystemApplication {
 
 	public static void main(String[] args) {
-		// Load the .env file
-		Dotenv dotenv = Dotenv.load();
+	// 	// Load the .env file
+	// 	Dotenv dotenv = Dotenv.load();
 
-		// Set environment variables to system properties
-		dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(),
-		entry.getValue()));
+	// 	// Set environment variables to system properties
+	// 	dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(),
+	// 	entry.getValue()));
 
-		SpringApplication.run(EmployeeReimbursementSystemApplication.class, args);
-	}
+	// 	SpringApplication.run(EmployeeReimbursementSystemApplication.class, args);
+	// }
 
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {

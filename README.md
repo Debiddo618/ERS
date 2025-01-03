@@ -8,7 +8,7 @@
 
 ## :pencil: Descriptions:
 
-The backend for the Employee Reimbursement System is developed using Java and the Spring Framework, with Spring Security and JWT implemented for user authentication and OAuth. It integrates a PostgreSQL database hosted on AWS for reliable data management. The application is fully dockerized and deployed on an EC2 instance, ensuring efficient operation and scalability. However, its availability is constrained to the duration of the AWS free tier period. The frontend for this application is accessible through this [GitHub repository.](https://github.com/Debiddo618/ERS-Frontend)
+The backend for the Employee Reimbursement System is developed using <b>Java</b> and the <b>Spring Framework</b>, with <b>Spring Security</b> and <b>JWT</b> implemented for user authentication and OAuth. It integrates a <b>PostgreSQL</b> database hosted on <b>AWS</b> for reliable data management. The application is fully <b>dockerized</b> and deployed on an <b>EC2</b> instance, ensuring efficient operation and scalability. However, its availability is constrained to the duration of the AWS free tier period. The frontend for this application is accessible through this [GitHub repository.](https://github.com/Debiddo618/ERS-Frontend)
 
 ## 📊 ERDS:
 
